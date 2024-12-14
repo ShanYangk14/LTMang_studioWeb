@@ -12,8 +12,8 @@ using StudioManagement.Models;
 namespace StudioManagement.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20241121075154_dbGYM")]
-    partial class dbGYM
+    [Migration("20241213152158_DBGYM")]
+    partial class DBGYM
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {

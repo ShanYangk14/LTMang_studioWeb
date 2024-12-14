@@ -5,8 +5,7 @@ using System.Security.Claims;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
-builder.Services.AddEndpointsApiExplorer();
+// Add services to the container
 
 // Add authentication services
 builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
@@ -25,13 +24,19 @@ builder.Services.AddAuthorization(options =>
         policy.RequireRole("member"));
 });
 
-
-// Add services to the container
-builder.Services.AddControllersWithViews();
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") + ";TrustServerCertificate=True";
+// Configure database connection
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<MyDbContext>(options =>
-    options.UseSqlServer(connectionString));
-builder.Services.AddScoped<MyDbContext>();
+    options.UseSqlServer(connectionString, sqlOptions =>
+    {
+        sqlOptions.EnableRetryOnFailure(
+            maxRetryCount: 5,
+            maxRetryDelay: TimeSpan.FromSeconds(30),
+            errorNumbersToAdd: null);
+    }));
+
+// Add controllers with views
+builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
@@ -58,6 +63,5 @@ app.MapControllerRoute(
     name: "member",
     pattern: "member/viewprofile",
     defaults: new { controller = "Member", action = "ViewProfile" });
-
 
 app.Run();

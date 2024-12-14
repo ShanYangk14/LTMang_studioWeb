@@ -86,7 +86,7 @@ namespace StudioManagement.Controllers
                     }
 
                     // Update the ImageUrl property
-                    existingEmployee.ImageUrl = Path.Combine("member", uniqueFileName).Replace("\\", "/");
+                    existingEmployee.ImageUrl = Path.Combine("employee", uniqueFileName).Replace("\\", "/");
                 }
 
                 await _context.SaveChangesAsync();
